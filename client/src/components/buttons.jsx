@@ -20,7 +20,7 @@ function Buttons() {
         }
     }
     const UserDetails=()=>{
-        navigate('/UserDetailPage');
+        navigate(`/UserDetailPage`);
     }
     return (
         <>
