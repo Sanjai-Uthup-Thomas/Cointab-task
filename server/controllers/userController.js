@@ -1,6 +1,8 @@
 const db = require('../models/connection');
 const axios = require('axios');
 const Users = db.user;
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 
 module.exports = {
@@ -28,15 +30,22 @@ module.exports = {
     },
     getUsers: async (req, res) => {
         try {
+            const search=(req.query.search)
+            console.log(search,"search");
+            var condition = search ? {[Op.or]:[{Name: { [Op.like]: `%${search}%` }},{Email: { [Op.like]: `%${search}%`}},{Phone: { [Op.like]: `%${search}%`}}]} : null
+            // console.log(condition,"condition");
             const page =parseInt(req.query.page) || 1;
             const pageSize = 10;
             const offset = (page - 1) * pageSize;
-            const total=await Users.count()
-            const pages = Math.ceil(total / pageSize);
+            const {count}=await Users.findAndCountAll({ where:condition})
+            const pages = Math.ceil(count / pageSize);
             const users = await Users.findAll({
+                where:condition,
                 limit: pageSize,
-                offset: offset
-              })
+                offset: offset,
+            })
+            console.log("condition");
+            //   console.log(users,"users");
             res.json({ users: users,pages })
         } catch (error) {
             res.status(500).json(error.message);

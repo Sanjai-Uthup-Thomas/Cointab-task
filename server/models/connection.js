@@ -8,6 +8,7 @@ const sequelize = new Sequelize(
     host: process.env.HOST,
   }
 );
+const Op = Sequelize.Op;
 sequelize
   .authenticate()
   .then(() => {

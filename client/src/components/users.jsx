@@ -5,7 +5,8 @@ import Pagination from './pagination'
 import SearchBar from './searchBar';
 
 function Users({ Pages }) {
-  console.log(Pages);
+  const [search,setSearch]=useState('')
+  console.log(search);
   const pageNumber = Pages || 1; 
   const [users,setUsers]=useState([])
   const [loading, setLoading] = useState(false);
@@ -17,7 +18,7 @@ function Users({ Pages }) {
     const fetchData=async()=>{
       setLoading(true);
       try{
-        const {data}=await axios.get(`http://localhost:4000/api/getUsers?page=${page}`)
+        const {data}=await axios.get(`http://localhost:4000/api/getUsers?page=${page}&search=${search}`)
         const {users,pages}=data
         setUsers(users)
         setPages(pages)
@@ -28,11 +29,14 @@ function Users({ Pages }) {
       }
       
     } 
+    console.log(search);
     fetchData()
-  },[page]) 
+  },[page,search]) 
+
+
   return (
     <>
-    <SearchBar/>
+    <SearchBar search={setSearch}/>
     {pages===0?<div className='containerTable'>No data to show</div>:<>
     <div className='containerTable'>
 
